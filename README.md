@@ -48,11 +48,12 @@ The testnet deployment is live, and reading it needs no wallet. Run from this fo
 cast finds the public RPCs named in `foundry.toml`:
 
 ```bash
-# What push() would send right now: prices for markets 0 and 1, and the HyperCore block
+# What push() would send right now: prices for markets 0 and 1 (SOL and APT on testnet; BTC
+# is 3), and the HyperCore block
 cast call 0xA6Cc483A5257DFec4b7705468622aCCA2a4521d1 "read(uint32[])(uint64[],uint64)" "[0,1]" \
   --rpc-url hyperevm_testnet
 
-# The last price delivered for market 0: (price, HyperCore block, read at, arrived at)
+# The last SOL price delivered: (price, HyperCore block, read at, arrived at)
 cast call 0x12DdFB5e2Bf3544B5BE0Ac5aC9437d3c81fAdF47 \
   "readingOf(uint32)((uint64,uint64,uint64,uint64))" 0 --rpc-url elysium_testnet
 ```
