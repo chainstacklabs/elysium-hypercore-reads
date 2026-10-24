@@ -49,8 +49,6 @@ contract FakeInbox is IInbox {
     }
 }
 
-/// Run with: forge test
-///
 /// One round trip: Beacon reads HyperCore, the message crosses the bridge, Receiver
 /// accepts it and serves the price. The bridge step is played by hand: deliver the
 /// stored message from the Beacon's shifted address, as Elysium would.
@@ -72,7 +70,7 @@ contract BeaconTest {
 
         uint32[] memory perps = new uint32[](1);
         perps[0] = BTC;
-        beacon.push{value: 1000 + 100_000 * 1}(perps, 100_000, 1);
+        beacon.push{value: 1000 + 100_000 * 2}(perps, 100_000, 2);
 
         require(inbox.to() == address(receiver), "sent somewhere else");
         bytes memory message = inbox.data(); // read first: prank covers only the next call

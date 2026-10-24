@@ -44,9 +44,9 @@ contract Receiver is IReceiver {
 
     /// Called by the bridge when a Beacon message arrives.
     ///
-    /// Reverts if the batch repeats or predates what is already stored, which also
-    /// means two pushes racing will leave the later one failing rather than
-    /// overwriting good data with old data.
+    /// Reverts if any market's HyperCore block is not newer than the stored one: a
+    /// replay, a late redeem of an older push, a second push read in the same HyperCore
+    /// block, or a market listed twice. Old data never overwrites newer data.
     function update(
         uint32[] calldata perps,
         uint64[] calldata prices,

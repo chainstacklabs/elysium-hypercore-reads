@@ -5,8 +5,6 @@ import {Alias} from "../src/Alias.sol";
 import {Receiver} from "../src/Receiver.sol";
 import {vm} from "./Vm.sol";
 
-/// Run with: forge test
-///
 /// The Receiver trusts one shifted address. Deploying it with this test contract's own
 /// unshifted address makes the trusted address exactly this contract, so these tests
 /// stand in for the bridge by calling it directly.

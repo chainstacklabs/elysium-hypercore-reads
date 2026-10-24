@@ -2,6 +2,7 @@
 pragma solidity 0.8.28;
 
 /// The address change a Nitro chain applies to messages from its parent chain.
+/// Arbitrum calls this address aliasing.
 ///
 /// Elysium runs on top of HyperEVM and accepts messages from it. When a contract on
 /// HyperEVM sends one, it does not arrive under its own address: Elysium adds a fixed

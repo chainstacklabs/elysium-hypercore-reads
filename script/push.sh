@@ -10,11 +10,14 @@
 #   - the Elysium gas that runs Receiver.update() when the message lands, 65-78 s later on testnet
 # Anything left over is refunded to the sender's address on Elysium.
 #
+# Needs Foundry (cast) and jq.
+#
 # Usage:
 #   HYPEREVM_RPC=... ELYSIUM_RPC=... BEACON=0x... PERPS=0,1 script/push.sh
 #   INTERVAL=60 ... script/push.sh      # push again every 60 seconds
 #
 # Signing uses cast's own keystore settings, so the key never appears here:
+#   ETH_KEYSTORE          path to a keystore file, or
 #   ETH_KEYSTORE_ACCOUNT  name of a key in ~/.foundry/keystores (cast wallet import)
 #   ETH_PASSWORD          path to a file holding its password
 #
@@ -66,7 +69,8 @@ push_once() {
 
     # Elysium gas for Receiver.update(), estimated as the bridge would run it: from
     # the Beacon's shifted address, which the Receiver stores as beacon(). The real
-    # read time is not known yet; any past time costs the same gas.
+    # read time is not known yet; any past time costs about the same gas, and the
+    # margin below covers the difference.
     # The keystore settings are dropped here: with them set, cast estimates as the
     # signer and ignores --from, and the Receiver refuses the signer.
     local sender gas gasLimit

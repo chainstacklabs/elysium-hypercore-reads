@@ -23,7 +23,8 @@ library HyperCore {
     error PriceIsZero(uint32 perp);
 
     /// Price of one perpetual market, as a fixed-point integer.
-    /// `perp` is HyperCore's index for that market: 0 is BTC, 1 is ETH.
+    /// `perp` is the market's index in HyperCore's market list. On mainnet 0 is BTC and
+    /// 1 is ETH; testnet has its own list.
     ///
     /// Divide by 10^(6 - szDecimals) for the real price, where szDecimals is the market's
     /// size precision from Hyperliquid's market list. BTC's is 5, so 815959 is 81,595.9.
@@ -32,12 +33,17 @@ library HyperCore {
         if (price == 0) revert PriceIsZero(perp);
     }
 
-    /// The HyperCore block the prices were read at. Readers use it to judge freshness.
+    /// The HyperCore block the prices were read at. The Receiver uses it to refuse
+    /// anything older than what it holds.
     function blockNumber() internal view returns (uint64) {
         return abi.decode(read(BLOCK_NUMBER, ""), (uint64));
     }
 
-    function read(address precompile, bytes memory input) private view returns (bytes memory output) {
+    function read(address precompile, bytes memory input)
+        private
+        view
+        returns (bytes memory output)
+    {
         bool ok;
         (ok, output) = precompile.staticcall(input);
         if (!ok || output.length != 32) revert ReadFailed(precompile);
