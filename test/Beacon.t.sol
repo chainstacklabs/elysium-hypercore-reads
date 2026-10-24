@@ -49,13 +49,11 @@ contract FakeInbox is IInbox {
     }
 }
 
-/// Run with: forge test
-///
 /// One round trip: Beacon reads HyperCore, the message crosses the bridge, Receiver
 /// accepts it and serves the price. The bridge step is played by hand: deliver the
 /// stored message from the Beacon's shifted address, as Elysium would.
 contract BeaconTest {
-    uint32 internal constant BTC = 0;
+    uint32 internal constant BTC = 0; // its index on mainnet
     uint64 internal constant BTC_81595_9 = 815959; // BTC prices carry 1 decimal
     uint64 internal constant HYPERCORE_BLOCK = 700_000_000;
 
@@ -63,7 +61,8 @@ contract BeaconTest {
         vm.etch(HyperCore.ORACLE_PX, address(new FakePrecompile(BTC_81595_9)).code);
         vm.etch(HyperCore.BLOCK_NUMBER, address(new FakePrecompile(HYPERCORE_BLOCK)).code);
 
-        // Each contract needs the other's address, so predict the Receiver's first.
+        // Each contract needs the other's address, so predict one. Either order works;
+        // here the Receiver's is predicted, the README predicts the Beacon's.
         FakeInbox inbox = new FakeInbox();
         address receiverAt = vm.computeCreateAddress(address(this), vm.getNonce(address(this)) + 1);
         Beacon beacon = new Beacon(inbox, receiverAt);
@@ -72,7 +71,7 @@ contract BeaconTest {
 
         uint32[] memory perps = new uint32[](1);
         perps[0] = BTC;
-        beacon.push{value: 1000 + 100_000 * 1}(perps, 100_000, 1);
+        beacon.push{value: 1000 + 100_000 * 2}(perps, 100_000, 2);
 
         require(inbox.to() == address(receiver), "sent somewhere else");
         bytes memory message = inbox.data(); // read first: prank covers only the next call

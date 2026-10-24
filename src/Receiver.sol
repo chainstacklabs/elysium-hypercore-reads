@@ -4,17 +4,13 @@ pragma solidity 0.8.28;
 import {Alias} from "./Alias.sol";
 import {IReceiver} from "./IReceiver.sol";
 
-/// Lives on Elysium. Holds HyperCore prices and serves them to other contracts.
+/// Lives on Elysium. Holds the HyperCore prices the Beacon sends from HyperEVM (see
+/// Beacon.sol) and serves them to other contracts. It takes updates from the Beacon's
+/// bridge address only, so anyone may trigger an update but nobody can change the prices.
 ///
-/// Elysium cannot read Hyperliquid's exchange. A companion contract on HyperEVM (the
-/// Beacon) reads the prices there and sends them here through Elysium's own bridge.
-/// The bridge stamps each message with the address that sent it, so this contract
-/// takes prices from that one address and refuses everything else. Anyone may trigger
-/// an update; nobody can change what the prices say.
-///
-/// The trip takes 65-78 s on testnet, so prices here always trail HyperCore by about a
-/// minute. Every reader must state how old a price it will accept. There is no default,
-/// and nothing here returns a stale price quietly.
+/// The bridge trip takes over a minute on testnet and is set by the sequencer, so it can
+/// differ elsewhere. Every reader must state how old a price it accepts. There is no
+/// default, and nothing here returns a stale price quietly.
 contract Receiver is IReceiver {
     struct Reading {
         uint64 price;
@@ -44,9 +40,10 @@ contract Receiver is IReceiver {
 
     /// Called by the bridge when a Beacon message arrives.
     ///
-    /// Reverts if the batch repeats or predates what is already stored, which also
-    /// means two pushes racing will leave the later one failing rather than
-    /// overwriting good data with old data.
+    /// Reverts if any market's HyperCore block is not newer than the stored one: a
+    /// replay, an older push whose failed delivery was rerun later, a second push read
+    /// in the same HyperCore block, or a market listed twice. Old data never overwrites
+    /// newer data.
     function update(
         uint32[] calldata perps,
         uint64[] calldata prices,

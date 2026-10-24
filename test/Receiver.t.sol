@@ -5,15 +5,13 @@ import {Alias} from "../src/Alias.sol";
 import {Receiver} from "../src/Receiver.sol";
 import {vm} from "./Vm.sol";
 
-/// Run with: forge test
-///
 /// The Receiver trusts one shifted address. Deploying it with this test contract's own
 /// unshifted address makes the trusted address exactly this contract, so these tests
 /// stand in for the bridge by calling it directly.
 contract ReceiverTest {
     Receiver internal receiver;
 
-    uint32 internal constant BTC = 0;
+    uint32 internal constant BTC = 0; // its index on mainnet
     uint64 internal constant BTC_81595_9 = 815959; // BTC prices carry 1 decimal
 
     function setUp() public {

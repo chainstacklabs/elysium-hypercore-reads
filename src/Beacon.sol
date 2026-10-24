@@ -18,7 +18,9 @@ contract Beacon {
     IInbox public immutable inbox;
     address public immutable receiver;
 
-    event Pushed(uint256 indexed ticketId, uint64 hyperCoreBlock, uint32[] perps, uint64[] prices);
+    event Pushed(
+        uint256 indexed messageNumber, uint64 hyperCoreBlock, uint32[] perps, uint64[] prices
+    );
 
     error NoMarketsGiven();
     error NotEnoughPaid(uint256 needed, uint256 paid);
@@ -42,16 +44,19 @@ contract Beacon {
         hyperCoreBlock = HyperCore.blockNumber();
     }
 
-    /// Reads the prices and sends them to Elysium. They land after the bridge delay
-    /// (65-78 s on testnet).
+    /// Reads the prices and sends them to Elysium, where they land after the bridge delay
+    /// (over a minute on testnet).
+    ///
+    /// List each market once. A repeat makes the Receiver refuse the whole batch.
     ///
     /// `gasLimit` and `maxFeePerGas` buy the Elysium transaction that delivers them.
-    /// Send at least the fee this quotes; whatever is left over is refunded to you
-    /// on Elysium, not here.
+    /// Neither may be 1: the Inbox treats 1 as a request to revert. Send at least
+    /// the fee this works out; whatever is left over is refunded to you on Elysium,
+    /// not here (to your shifted address if you are a contract, see Alias.sol).
     function push(uint32[] calldata perps, uint256 gasLimit, uint256 maxFeePerGas)
         external
         payable
-        returns (uint256 ticketId)
+        returns (uint256 messageNumber)
     {
         if (perps.length == 0) revert NoMarketsGiven();
 
@@ -64,9 +69,9 @@ contract Beacon {
         uint256 needed = submissionFee + gasLimit * maxFeePerGas;
         if (msg.value < needed) revert NotEnoughPaid(needed, msg.value);
 
-        ticketId = inbox.createRetryableTicket{value: msg.value}(
+        messageNumber = inbox.createRetryableTicket{value: msg.value}(
             receiver, 0, submissionFee, msg.sender, msg.sender, gasLimit, maxFeePerGas, message
         );
-        emit Pushed(ticketId, hyperCoreBlock, perps, prices);
+        emit Pushed(messageNumber, hyperCoreBlock, perps, prices);
     }
 }
