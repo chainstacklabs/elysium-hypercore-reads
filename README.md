@@ -5,11 +5,11 @@
 </p>
 
 <p align="center">
-  • <a target="_blank" href="https://chainstack.com/">Homepage</a> •
-  <a target="_blank" href="https://chainstack.com/protocols/">Supported protocols</a> •
-  <a target="_blank" href="https://chainstack.com/blog/">Chainstack blog</a> •
-  <a target="_blank" href="https://docs.chainstack.com/quickstart/">Blockchain API reference</a> • <br> 
-  • <a target="_blank" href="https://console.chainstack.com/user/account/create">Start for free</a> •
+  • <a target="_blank" href="https://chainstack.com/?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads">Homepage</a> •
+  <a target="_blank" href="https://chainstack.com/protocols/?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads">Supported protocols</a> •
+  <a target="_blank" href="https://chainstack.com/blog/?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads">Chainstack blog</a> •
+  <a target="_blank" href="https://docs.chainstack.com/reference/blockchain-apis?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads">Blockchain API reference</a> • <br> 
+  • <a target="_blank" href="https://console.chainstack.com/sign-up?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads">Start for free</a> •
 </p>
 
 # HyperCore prices on Elysium
@@ -176,7 +176,7 @@ numbers with none applied.
 ## Push and deploy
 
 **Key and funds.** Create a key, then request testnet HYPE for its address from the
-[Chainstack faucet](https://faucet.chainstack.com/) (Hyperliquid testnet):
+[Chainstack faucet](https://faucet.chainstack.com/?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads) (Hyperliquid testnet):
 
 ```bash
 cast wallet new deployer                # create the key, protected by a password
@@ -223,8 +223,8 @@ forge create src/Beacon.sol:Beacon -r $H --broadcast \
 `BEACON` and `RECEIVER` now hold the new pair, so the commands above work on it unchanged.
 
 **Dedicated nodes.** The public RPCs are rate limited. An AI coding agent with the
-[Chainstack MCP server](https://docs.chainstack.com/docs/chainstack-mcp-server) and an
-[API key](https://console.chainstack.com/user/settings/api-keys) can request testnet HYPE and
+[Chainstack MCP server](https://docs.chainstack.com/docs/chainstack-mcp-server?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads) and an
+[API key](https://console.chainstack.com/user/settings/api-keys?utm_source=github&utm_medium=referral&utm_campaign=elysium-hypercore-reads) can request testnet HYPE and
 deploy dedicated HyperEVM and Elysium nodes. Use their URLs in place of `hyperevm_testnet` and
 `elysium_testnet`, with `/evm` appended to the Hyperliquid node's URL.
 
